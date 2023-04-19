@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="67a312bd-37f6-4943-a777-19cba2fb6fa8" name="Changes" comment="" />
+    <list default="true" id="67a312bd-37f6-4943-a777-19cba2fb6fa8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xmpp/server/ConnSocketWrapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xmpp/server/ServerSendThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xmpp/server/ServerSendThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xmpp/server/XMPPServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xmpp/server/XMPPServer.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
