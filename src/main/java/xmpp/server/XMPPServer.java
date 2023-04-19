@@ -22,12 +22,21 @@ public class XMPPServer {
             while (true) {
                 Socket connSocket = server.acceptConn();
                 ConnSocketWrapper connSocketWrapper = new ConnSocketWrapper(connSocket);
-                server.sendMessage(connSocketWrapper, "Hello");
-                server.sendMessage(connSocketWrapper, "HI");
-                server.sendMessage(connSocketWrapper, "Xin chao");
-                server.sendMessage(connSocketWrapper, "Bonjour");
-                server.sendMessage(connSocketWrapper, "Si");
-                server.sendMessage(connSocketWrapper, "Escobar");
+                server.sendMessage(connSocketWrapper, "Hello alibabababababababababađâsd alibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsd");
+//                Thread.sleep(1);
+                server.sendMessage(connSocketWrapper, "HI alibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsd");
+//                Thread.sleep(1);
+
+                server.sendMessage(connSocketWrapper, "Xin chao alibabababababababababađâsd");
+//                Thread.sleep(1);
+
+                server.sendMessage(connSocketWrapper, "Bonjour alibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsd");
+//                Thread.sleep(1000);
+
+                server.sendMessage(connSocketWrapper, "Si alibabababababababababađâsd");
+//                Thread.sleep(1000);
+
+                server.sendMessage(connSocketWrapper, "Escobar alibabababababababababađâsd");
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());

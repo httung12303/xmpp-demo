@@ -14,11 +14,13 @@ public class ServerSendThread extends Thread {
         this.message = message;
     }
     // Synchronization is needed because we might write multiple messages to client at the same time.
-    synchronized public void sendMessage(String message) throws IOException {
-        byte[] b = message.getBytes();
-        output.writeInt(b.length);
-        output.write(b);
-        output.flush();
+    public void sendMessage(String message) throws IOException {
+        synchronized (output) {
+            byte[] b = message.getBytes();
+            output.writeInt(b.length);
+            output.write(b);
+            output.flush();
+        }
     }
     @Override
     public void run() {
