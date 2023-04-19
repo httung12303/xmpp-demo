@@ -17,7 +17,7 @@ public class ClientReceiveThread extends Thread {
     // We'll change this to return Stanza later on.
     public String receiveMessage() throws IOException {
         String result = "";
-        long remainingLen = input.readInt();
+        int remainingLen = input.readInt();
         int bytes;
         byte[] buffer = new byte[4 * 1024];
         while (remainingLen > 0 && (bytes = input.read(buffer, 0, (int) Math.min(remainingLen, buffer.length))) != -1) {
