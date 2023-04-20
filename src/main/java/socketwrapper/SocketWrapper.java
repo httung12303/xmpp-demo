@@ -24,4 +24,22 @@ public class SocketWrapper {
     public DataInputStream getInputStream() {
         return inputStream;
     }
+    public boolean connected() {
+        return connSocket.isConnected() && !connSocket.isClosed();
+    }
+    public void close() {
+        try {
+            if(connSocket != null) {
+                connSocket.close();
+            }
+            if(inputStream != null) {
+                inputStream.close();
+            }
+            if(outputStream != null) {
+                outputStream.close();
+            }
+        } catch (IOException e) {
+
+        }
+    }
 }

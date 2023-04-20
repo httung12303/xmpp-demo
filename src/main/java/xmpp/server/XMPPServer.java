@@ -41,7 +41,20 @@ public class XMPPServer {
         }
     }
 
+    public static void receiveExample() {
+        try {
+            XMPPServer server = new XMPPServer(10000);
+            while(true) {
+                Socket connSocket = server.acceptConn();
+                SocketWrapper socketWrapper = new SocketWrapper(connSocket);
+                new ServerReceiveThread(socketWrapper).start();
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
-        XMPPServer.sendExample();
+        XMPPServer.receiveExample();
     }
 }
