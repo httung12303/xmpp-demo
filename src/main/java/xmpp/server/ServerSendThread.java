@@ -1,5 +1,7 @@
 package xmpp.server;
 
+import socketwrapper.SocketWrapper;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -8,7 +10,7 @@ public class ServerSendThread extends Thread {
     private final Socket connSocket;
     private final DataOutputStream output;
     private final String message;
-    public ServerSendThread(ConnSocketWrapper wrapper, String message) throws IOException {
+    public ServerSendThread(SocketWrapper wrapper, String message) throws IOException {
         this.connSocket = wrapper.getConnSocket();
         this.output = wrapper.getOutputStream();
         this.message = message;

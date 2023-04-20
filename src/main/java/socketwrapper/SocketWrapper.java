@@ -1,20 +1,27 @@
 package xmpp.server;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ConnSocketWrapper {
+public class SocketWrapper {
     private final Socket connSocket;
     private final DataOutputStream outputStream;
-    public ConnSocketWrapper(Socket connSocket) throws IOException {
+    private final DataInputStream inputStream;
+    public SocketWrapper(Socket connSocket) throws IOException {
         this.connSocket = connSocket;
         this.outputStream = new DataOutputStream(connSocket.getOutputStream());
+        this.inputStream = new DataInputStream(connSocket.getInputStream());
     }
     public Socket getConnSocket() {
         return connSocket;
     }
     public DataOutputStream getOutputStream() {
         return outputStream;
+    }
+
+    public DataInputStream getInputStream() {
+        return inputStream;
     }
 }
