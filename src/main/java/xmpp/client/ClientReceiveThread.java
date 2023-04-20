@@ -1,5 +1,7 @@
 package xmpp.client;
 
+import socketwrapper.SocketWrapper;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -9,9 +11,9 @@ public class ClientReceiveThread extends Thread {
     private Socket clientSocket;
     private DataInputStream input;
 
-    public ClientReceiveThread(Socket clientSocket) throws IOException {
-        this.clientSocket = clientSocket;
-        this.input = new DataInputStream(clientSocket.getInputStream());
+    public ClientReceiveThread(SocketWrapper wrapper) throws IOException {
+        this.clientSocket = wrapper.getConnSocket();
+        this.input = wrapper.getInputStream();
     }
 
     // We'll change this to return Stanza later on.

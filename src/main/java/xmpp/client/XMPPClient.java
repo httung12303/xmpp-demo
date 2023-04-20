@@ -1,14 +1,16 @@
 package xmpp.client;
 
+import socketwrapper.SocketWrapper;
+
 import java.io.IOException;
 import java.net.*;
 
 public class XMPPClient {
-    private Socket clientSocket;
+    private SocketWrapper clientSocket;
     private Thread receiveThread;
 
     public XMPPClient(String ip, int port) throws IOException {
-        clientSocket = new Socket(ip, port);
+        clientSocket = new SocketWrapper(new Socket(ip, port));
         receiveThread = new ClientReceiveThread(clientSocket);
         receiveThread.start();
     }
