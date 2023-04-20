@@ -1,4 +1,4 @@
-package xmpp.server;
+package socketwrapper;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
