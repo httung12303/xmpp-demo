@@ -1,12 +1,13 @@
 package db;
 import java.sql.*;
 public class DBManager {
+    private final String DATABASE_URL = "jdbc:mysql://localhost:3306/sys";
     private final String USER = "root";
     private final String PASSWORD = "123456789";
     private final Connection connection;
     public DBManager() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sys", USER, PASSWORD);
+        connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
         System.out.println(connection);
     }
     public ResultSet executeQuery(String query) throws SQLException {
