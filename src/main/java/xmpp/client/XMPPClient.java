@@ -51,7 +51,7 @@ public class XMPPClient {
   }
 
   public static void main(String[] args) {
-    XMPPClient.sendExample();
+    XMPPClient.receiveExample();
   }
 
   public SocketWrapper getClientSocket() {
