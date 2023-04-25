@@ -28,7 +28,6 @@ public abstract class ReceiveThread extends Thread {
             byteStream.write(buffer, 0, bytes);
         }
         Stanza stanza = Stanza.getStanzaFromDocumentBytes(byteStream.toByteArray());
-        System.out.println(stanza);
         return stanza;
     }
 
