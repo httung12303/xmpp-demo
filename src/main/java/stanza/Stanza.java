@@ -1,4 +1,4 @@
-package Stanza;
+package stanza;
 
 import java.lang.*;
 import org.w3c.dom.Document;

@@ -4,7 +4,7 @@ import socketwrapper.SocketWrapper;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import Stanza.Stanza;
+import stanza.Stanza;
 
 import javax.xml.transform.TransformerException;
 

@@ -1,6 +1,6 @@
 package iothread;
 
-import Stanza.Stanza;
+import stanza.Stanza;
 import org.xml.sax.SAXException;
 import socketwrapper.SocketWrapper;
 

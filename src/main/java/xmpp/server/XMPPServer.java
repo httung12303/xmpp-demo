@@ -1,6 +1,6 @@
 package xmpp.server;
 
-import Stanza.Stanza;
+import stanza.Stanza;
 import socketwrapper.SocketWrapper;
 
 import java.io.IOException;
