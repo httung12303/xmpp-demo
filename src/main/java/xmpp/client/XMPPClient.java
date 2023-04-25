@@ -20,13 +20,9 @@ public class XMPPClient {
     public XMPPClient(String ip, int port) throws IOException {
         Socket socket = new Socket(ip, port);
         clientSocket = new SocketWrapper(socket);
-        JID = String.format("%d@%s", socket.getLocalPort(), socket.getLocalAddress());
-        serverJID = String.format("%d@%s", socket.getPort(), socket.getInetAddress());
+        JID = String.format("%d@%s", socket.getLocalPort(), socket.getLocalAddress().toString().replace("/", ""));
+        serverJID = String.format("%d@%s", socket.getPort(), socket.getInetAddress().toString().replace("/", ""));
         environment = new Environment();
-    }
-
-    public boolean connected() {
-        return this.clientSocket.connected();
     }
 
     public void startReceiveThread() throws IOException {
@@ -48,8 +44,7 @@ public class XMPPClient {
             @Override
             public void run() {
                 try {
-                    Thread sendThread = new ClientSendThread(clientSocket, getState());
-                    sendThread.start();
+                    sendStanza(getState());
                 } catch (Exception e) {
 
                 }
