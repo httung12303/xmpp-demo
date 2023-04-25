@@ -10,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class ResultIQ extends Stanza {
   public ResultIQ(Document document) throws ParserConfigurationException {
     super(document);
+    this.type = Stanza.RESULT_IQ;
   }
 
   public ResultIQ(String from, String to, String id) throws ParserConfigurationException {
@@ -20,6 +21,7 @@ public class ResultIQ extends Stanza {
     iq.setAttribute("type", "result");
     iq.setAttribute("id", id);
     this.getDocument().appendChild(iq);
+    this.type = Stanza.RESULT_IQ;
   }
 
   public void addItem(String info, String value) {

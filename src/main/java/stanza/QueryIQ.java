@@ -10,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class QueryIQ extends Stanza {
   public QueryIQ(Document document) throws ParserConfigurationException {
     super(document);
+    this.type = Stanza.QUERY_IQ;
   }
 
   public QueryIQ(String from, String to, String id) throws ParserConfigurationException {
@@ -20,6 +21,7 @@ public class QueryIQ extends Stanza {
     iq.setAttribute("type", "get");
     iq.setAttribute("id", id);
     this.getDocument().appendChild(iq);
+    this.type = Stanza.QUERY_IQ;
   }
 
   public void addQuery(String info) {
