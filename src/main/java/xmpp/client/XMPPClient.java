@@ -10,9 +10,16 @@ import java.net.*;
 public class XMPPClient {
   private SocketWrapper clientSocket;
   private Thread receiveThread;
+  private String JID;
+  private String serverJID;
+  private Environment environment;
 
   public XMPPClient(String ip, int port) throws IOException {
-    clientSocket = new SocketWrapper(new Socket(ip, port));
+    Socket socket = new Socket(ip, port);
+    clientSocket = new SocketWrapper(socket);
+    JID = String.format("%d@%s", socket.getLocalPort(), socket.getLocalAddress());
+    serverJID = String.format("%d@%s", socket.getPort(), socket.getInetAddress());
+    environment = new Environment();
   }
 
   public void startReceive() throws IOException {
