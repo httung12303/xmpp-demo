@@ -8,8 +8,6 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
-.idea/workspace.xml
-
 *.iws
 *.iml
 *.ipr
@@ -40,4 +38,3 @@ build/
 .DS_Store
 
 .idea/
-pom.xml
