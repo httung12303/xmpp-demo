@@ -71,7 +71,7 @@ abstract public class Stanza {
 
   public static void main(String[] args) {
     try {
-      QueryIQ iq = new QueryIQ("1", "2", "0205");
+      QueryIQ iq = new QueryIQ("1", "2");
       iq.addQuery("temp");
       iq.addQuery("humid");
       Stanza otherIQ = Stanza.getStanzaFromDocumentBytes(Stanza.getDocumentBytes(iq));
