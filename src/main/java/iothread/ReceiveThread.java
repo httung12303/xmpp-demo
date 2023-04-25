@@ -1,48 +1,49 @@
 package iothread;
 
+import Stanza.Stanza;
+import org.xml.sax.SAXException;
 import socketwrapper.SocketWrapper;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 public abstract class ReceiveThread extends Thread {
-    private final SocketWrapper socketWrapper;
+  private final SocketWrapper socketWrapper;
 
-    public ReceiveThread(SocketWrapper wrapper) throws IOException {
-        this.socketWrapper = wrapper;
+  public ReceiveThread(SocketWrapper wrapper) throws IOException {
+    this.socketWrapper = wrapper;
+  }
+
+  public Stanza receiveStanza() throws IOException, ParserConfigurationException, SAXException {
+    final DataInputStream input = socketWrapper.getInputStream();
+    int remainingLen = input.readInt();
+    int bytes;
+    byte[] buffer = new byte[4 * 1024];
+    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+    while (remainingLen > 0
+        && (bytes = input.read(buffer, 0, (int) Math.min(remainingLen, buffer.length))) != -1) {
+      remainingLen -= bytes;
+      byteStream.write(buffer, 0, bytes);
     }
+    Stanza stanza = Stanza.getStanzaFromDocumentBytes(byteStream.toByteArray());
+    System.out.println(stanza);
+    return stanza;
+  }
 
-    // We'll change this to return Stanza later on.
-    public String receiveMessage() throws IOException {
-        String result = "";
-        final DataInputStream input = socketWrapper.getInputStream();
-        int remainingLen = input.readInt();
-        int bytes;
-        byte[] buffer = new byte[4 * 1024];
-        while (remainingLen > 0 && (bytes = input.read(buffer, 0, (int) Math.min(remainingLen, buffer.length))) != -1) {
-            remainingLen -= bytes;
-            String temp = new String(buffer, 0, bytes, StandardCharsets.UTF_8);
-            result += temp;
+  @Override
+  public void run() {
+    while (true) {
+      try {
+        if (!socketWrapper.connected()) {
+          break;
         }
-        System.out.println(result);
-        return result;
+        receiveStanza();
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+        socketWrapper.close();
+      }
     }
-
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                if (!socketWrapper.connected()) {
-                    break;
-                }
-                receiveMessage();
-                // Do something
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                socketWrapper.close();
-            }
-        }
-    }
+  }
 }

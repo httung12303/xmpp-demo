@@ -1,5 +1,6 @@
 package xmpp.server;
 
+import Stanza.Stanza;
 import iothread.SendThread;
 import socketwrapper.SocketWrapper;
 
@@ -9,7 +10,7 @@ import java.net.Socket;
 
 public class ServerSendThread extends SendThread {
 
-    public ServerSendThread(SocketWrapper wrapper, String message) throws IOException {
-        super(wrapper, message);
+    public ServerSendThread(SocketWrapper wrapper, Stanza stanza) throws IOException {
+        super(wrapper, stanza);
     }
 }

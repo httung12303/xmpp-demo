@@ -1,5 +1,6 @@
 package xmpp.server;
 
+import Stanza.Stanza;
 import socketwrapper.SocketWrapper;
 
 import java.io.IOException;
@@ -14,8 +15,8 @@ public class XMPPServer {
     public Socket acceptConn() throws IOException {
         return serverSocket.accept();
     }
-    public void sendMessage(SocketWrapper wrapper, String message) throws IOException {
-        Thread thread = new ServerSendThread(wrapper, message);
+    public void sendStanza(SocketWrapper wrapper, Stanza stanza) throws IOException {
+        Thread thread = new ServerSendThread(wrapper, stanza);
         thread.start();
     }
     public static void sendExample() {
@@ -28,13 +29,7 @@ public class XMPPServer {
             while (true) {
                 Socket connSocket = server.acceptConn();
                 SocketWrapper socketWrapper = new SocketWrapper(connSocket);
-                // Start a receive thread, which listens to messages and interact with db based on the messages' content.
-                server.sendMessage(socketWrapper, "Hello alibabababababababababađâsd alibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsd");
-                server.sendMessage(socketWrapper, "HI alibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsd");
-                server.sendMessage(socketWrapper, "Xin chao alibabababababababababađâsd");
-                server.sendMessage(socketWrapper, "Bonjour alibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsdalibabababababababababađâsd");
-                server.sendMessage(socketWrapper, "Si alibabababababababababađâsd");
-                server.sendMessage(socketWrapper, "Escobar alibabababababababababađâsd");
+
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());

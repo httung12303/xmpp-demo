@@ -4,20 +4,22 @@ import socketwrapper.SocketWrapper;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
+import Stanza.Stanza;
+
+import javax.xml.transform.TransformerException;
 
 public abstract class SendThread extends Thread {
     private final SocketWrapper socketWrapper;
-    private final String message;
-    public SendThread(SocketWrapper wrapper, String message) throws IOException {
+    private final Stanza stanza;
+    public SendThread(SocketWrapper wrapper, Stanza stanza) throws IOException {
         this.socketWrapper = wrapper;
-        this.message = message;
+        this.stanza = stanza;
     }
     // Synchronization is needed because we might write multiple messages to client at the same time.
-    public void sendMessage(String message) throws IOException {
+    public void sendStanza() throws IOException, TransformerException {
         final DataOutputStream output = socketWrapper.getOutputStream();
         synchronized (output) {
-            byte[] b = message.getBytes();
+            byte[] b = Stanza.getDocumentBytes(stanza);
             output.writeInt(b.length);
             output.write(b);
             output.flush();
@@ -29,8 +31,8 @@ public abstract class SendThread extends Thread {
             if(!socketWrapper.connected()) {
                 return;
             }
-            sendMessage(message);
-        } catch (IOException e) {
+            sendStanza();
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             socketWrapper.close();
         }
