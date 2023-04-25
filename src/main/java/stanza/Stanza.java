@@ -17,7 +17,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class Stanza {
+abstract public class Stanza {
+  public static final int QUERY_IQ = 0;
+  public static final int RESULT_IQ = 1;
+  protected int type;
   private Document document;
 
   public Stanza(Document document) {
@@ -60,6 +63,10 @@ public class Stanza {
       }
     }
     return null;
+  }
+
+  public int getType() {
+    return this.type;
   }
 
   public static void main(String[] args) {

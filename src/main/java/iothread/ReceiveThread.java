@@ -10,40 +10,43 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 public abstract class ReceiveThread extends Thread {
-  private final SocketWrapper socketWrapper;
+    private final SocketWrapper socketWrapper;
 
-  public ReceiveThread(SocketWrapper wrapper) throws IOException {
-    this.socketWrapper = wrapper;
-  }
-
-  public Stanza receiveStanza() throws IOException, ParserConfigurationException, SAXException {
-    final DataInputStream input = socketWrapper.getInputStream();
-    int remainingLen = input.readInt();
-    int bytes;
-    byte[] buffer = new byte[4 * 1024];
-    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-    while (remainingLen > 0
-        && (bytes = input.read(buffer, 0, (int) Math.min(remainingLen, buffer.length))) != -1) {
-      remainingLen -= bytes;
-      byteStream.write(buffer, 0, bytes);
+    public ReceiveThread(SocketWrapper wrapper) throws IOException {
+        this.socketWrapper = wrapper;
     }
-    Stanza stanza = Stanza.getStanzaFromDocumentBytes(byteStream.toByteArray());
-    System.out.println(stanza);
-    return stanza;
-  }
 
-  @Override
-  public void run() {
-    while (true) {
-      try {
-        if (!socketWrapper.connected()) {
-          break;
+    public Stanza receiveStanza() throws IOException, ParserConfigurationException, SAXException {
+        final DataInputStream input = socketWrapper.getInputStream();
+        int remainingLen = input.readInt();
+        int bytes;
+        byte[] buffer = new byte[4 * 1024];
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        while (remainingLen > 0
+                && (bytes = input.read(buffer, 0, (int) Math.min(remainingLen, buffer.length))) != -1) {
+            remainingLen -= bytes;
+            byteStream.write(buffer, 0, bytes);
         }
-        receiveStanza();
-      } catch (Exception e) {
-        System.out.println(e.getMessage());
-        socketWrapper.close();
-      }
+        Stanza stanza = Stanza.getStanzaFromDocumentBytes(byteStream.toByteArray());
+        System.out.println(stanza);
+        return stanza;
     }
-  }
+
+    abstract public void processStanza(Stanza stanza);
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                if (!socketWrapper.connected()) {
+                    break;
+                }
+                Stanza stanza = receiveStanza();
+                processStanza(stanza);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                socketWrapper.close();
+            }
+        }
+    }
 }
