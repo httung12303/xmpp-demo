@@ -13,13 +13,12 @@ public class QueryIQ extends Stanza {
     this.type = Stanza.QUERY_IQ;
   }
 
-  public QueryIQ(String from, String to, String id) throws ParserConfigurationException {
+  public QueryIQ(String from, String to) throws ParserConfigurationException {
     super();
     Element iq = this.getDocument().createElement("iq");
     iq.setAttribute("from", from);
     iq.setAttribute("to", to);
     iq.setAttribute("type", "get");
-    iq.setAttribute("id", id);
     this.getDocument().appendChild(iq);
     this.type = Stanza.QUERY_IQ;
   }
@@ -36,12 +35,11 @@ public class QueryIQ extends Stanza {
     Element root = (Element) this.getDocument().getFirstChild();
     NodeList children = root.getChildNodes();
     result.append(String.format(
-            "<%s from='%s' to='%s' type='%s' id='%s'>\n",
+            "<%s from='%s' to='%s' type='%s'>\n",
             root.getTagName(),
             root.getAttribute("from"),
             root.getAttribute("to"),
-            root.getAttribute("type"),
-            root.getAttribute("id")));
+            root.getAttribute("type")));
 
     for (int i = 0; i < children.getLength(); i++) {
       Node node = children.item(i);

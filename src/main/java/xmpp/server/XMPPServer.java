@@ -25,16 +25,12 @@ public class XMPPServer {
     }
 
     public static void sendExample() {
-        // The real implementation is similar except the loop does not do the sending
-        // but starts a receiving thread immediately.
-        // Since each connection listen on a separate DataInputStream, synchronization is not a problem, not foe the
-        // receiving side at least.
         try {
             XMPPServer server = new XMPPServer(10000);
             while (true) {
                 Socket connSocket = server.acceptConn();
                 SocketWrapper socketWrapper = new SocketWrapper(connSocket);
-                ResultIQ iq1 = new ResultIQ("client", "server", "1234");
+                ResultIQ iq1 = new ResultIQ("client", "server");
                 iq1.addItem("temp", "30");
                 iq1.addItem("humid", "40");
                 server.sendStanza(socketWrapper, iq1);
@@ -64,7 +60,6 @@ public class XMPPServer {
     }
 
     public static void main(String[] args) {
-        // XMPPServer.receiveExample();
-        XMPPServer.sendExample();
+        XMPPServer.receiveExample();
     }
 }
