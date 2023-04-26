@@ -16,6 +16,10 @@ public abstract class ReceiveThread extends Thread {
         this.socketWrapper = wrapper;
     }
 
+    public SocketWrapper getSocketWrapper() {
+        return socketWrapper;
+    }
+
     public Stanza receiveStanza() throws IOException, ParserConfigurationException, SAXException {
         final DataInputStream input = socketWrapper.getInputStream();
         int remainingLen = input.readInt();
