@@ -3,6 +3,7 @@ package db;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import stanza.ResultIQ;
+import stanza.Stanza;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -20,8 +21,8 @@ public class InsertRowThread extends Thread{
     @Override
     public void run() {
         try {
-            String jid = ResultIQ.getJID(iq);
-            String time = ResultIQ.getInfo(iq, "time");
+            String jid = Stanza.getSender(iq);
+            String time = Stanza.getTime(iq);
             String temperature = ResultIQ.getInfo(iq, "temperature");
             String humidity = ResultIQ.getInfo(iq, "humidity");
             String brightness = ResultIQ.getInfo(iq, "brightness");
