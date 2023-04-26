@@ -1,6 +1,7 @@
 package xmpp.client;
 
 import socketwrapper.SocketWrapper;
+import stanza.QueryIQ;
 import stanza.ResultIQ;
 import stanza.Stanza;
 
@@ -39,7 +40,7 @@ public class XMPPClient {
         return state;
     }
 
-    public void startInfoSendThread() {
+    public void startInfoSendTimer() {
         TimerTask intervalSend = new TimerTask() {
             @Override
             public void run() {
@@ -59,12 +60,34 @@ public class XMPPClient {
         thread.start();
     }
 
+    public void startQuerySendTimer() {
+        TimerTask intervalSend = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    sendStanza(createQueryIQ());
+                } catch (Exception e) {
+
+                }
+            }
+        };
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(intervalSend, 1000, 10000);
+    }
+    public Stanza createQueryIQ() throws ParserConfigurationException {
+        QueryIQ queryIQ = new QueryIQ(JID, serverJID);
+        queryIQ.addQuery("temperature");
+        queryIQ.addQuery("humidity");
+        queryIQ.addQuery("brightness");
+        return queryIQ;
+    }
+
     public static void main(String[] args) {
         try {
             XMPPClient client = new XMPPClient("127.0.0.1", 10000);
             client.startReceiveThread();
-            client.startInfoSendThread();
-
+            client.startInfoSendTimer();
+            client.startQuerySendTimer();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
