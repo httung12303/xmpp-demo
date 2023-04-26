@@ -39,7 +39,7 @@ public class XMPPClient {
         return state;
     }
 
-    public void startInfoSend() {
+    public void startInfoSendThread() {
         TimerTask intervalSend = new TimerTask() {
             @Override
             public void run() {
@@ -63,7 +63,7 @@ public class XMPPClient {
         try {
             XMPPClient client = new XMPPClient("127.0.0.1", 10000);
             client.startReceiveThread();
-            client.startInfoSend();
+            client.startInfoSendThread();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
