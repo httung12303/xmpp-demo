@@ -68,4 +68,23 @@ abstract public class Stanza {
   public int getType() {
     return this.type;
   }
+
+  public static String getSender(Stanza stanza) {
+    Document doc = stanza.getDocument();
+    Element root = (Element) doc.getFirstChild();
+    return root.getAttribute("from");
+  }
+
+  public static String getSReceiver(Stanza stanza) {
+    Document doc = stanza.getDocument();
+    Element root = (Element) doc.getFirstChild();
+    return root.getAttribute("to");
+  }
+
+  public static String getTime(Stanza stanza) {
+    Document doc = stanza.getDocument();
+    Element root = (Element) doc.getFirstChild();
+    String time = root.getAttribute("time");
+    return time;
+  }
 }

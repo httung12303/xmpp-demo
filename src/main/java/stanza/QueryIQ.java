@@ -26,25 +26,17 @@ public class QueryIQ extends Stanza {
     this.type = Stanza.QUERY_IQ;
   }
 
-  public static LocalTime getTime(QueryIQ iq) {
-    Document doc = iq.getDocument();
-    Element root = (Element) doc.getFirstChild();
-    String timeString = root.getAttribute("time");
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-    LocalTime time = LocalTime.parse(timeString, formatter);
-    return time;
-  }
-
   public String toString() {
     StringBuilder result = new StringBuilder();
     Element root = (Element) this.getDocument().getFirstChild();
     NodeList children = root.getChildNodes();
     result.append(String.format(
-            "<%s from='%s' to='%s' type='%s'>\n",
+            "<%s from='%s' to='%s' type='%s time='%s''>\n",
             root.getTagName(),
             root.getAttribute("from"),
             root.getAttribute("to"),
-            root.getAttribute("type")));
+            root.getAttribute("type"),
+            Stanza.getTime(this)));
 
     for (int i = 0; i < children.getLength(); i++) {
       Node node = children.item(i);
