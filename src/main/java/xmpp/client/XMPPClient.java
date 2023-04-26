@@ -57,7 +57,7 @@ public class XMPPClient {
             }
         };
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(intervalSend, 1000, 5000);
+        timer.scheduleAtFixedRate(intervalSend, 1000, 2000);
     }
 
 
@@ -90,10 +90,10 @@ public class XMPPClient {
 
     public static void main(String[] args) {
         try {
-            XMPPClient client = new XMPPClient("10.90.108.195", 10000);
+            XMPPClient client = new XMPPClient("192.168.1.107", 10000);
             client.startReceiveThread();
             client.startInfoSendTimer();
-            client.startQuerySendTimer();
+//            client.startQuerySendTimer();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
