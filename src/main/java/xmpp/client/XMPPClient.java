@@ -20,6 +20,7 @@ public class XMPPClient {
 
     public XMPPClient(String ip, int port) throws IOException {
         Socket socket = new Socket(ip, port);
+        System.out.println("Connected");
         clientSocket = new SocketWrapper(socket);
         JID = String.format("%d@%s", socket.getLocalPort(), socket.getLocalAddress().toString().replace("/", ""));
         serverJID = String.format("%d@%s", socket.getPort(), socket.getInetAddress().toString().replace("/", ""));
@@ -52,7 +53,7 @@ public class XMPPClient {
             }
         };
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(intervalSend, 1000, 2000);
+        timer.scheduleAtFixedRate(intervalSend, 1000, 5000);
     }
 
     public void sendStanza(Stanza stanza) throws IOException {
@@ -84,7 +85,7 @@ public class XMPPClient {
 
     public static void main(String[] args) {
         try {
-            XMPPClient client = new XMPPClient("127.0.0.1", 10000);
+            XMPPClient client = new XMPPClient("10.90.108.195", 10000);
             client.startReceiveThread();
             client.startInfoSendTimer();
             client.startQuerySendTimer();
