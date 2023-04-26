@@ -18,6 +18,8 @@ public class XMPPClient {
     private String serverJID;
     private Environment environment;
 
+    private RecEnviroment recEnviroment;
+
     public XMPPClient(String ip, int port) throws IOException {
         Socket socket = new Socket(ip, port);
         System.out.println("Connected");
@@ -28,7 +30,7 @@ public class XMPPClient {
     }
 
     public void startReceiveThread() throws IOException {
-        receiveThread = new ClientReceiveThread(clientSocket);
+        receiveThread = new ClientReceiveThread(clientSocket, recEnviroment);
         receiveThread.start();
     }
 
@@ -55,6 +57,7 @@ public class XMPPClient {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(intervalSend, 1000, 5000);
     }
+
 
     public void sendStanza(Stanza stanza) throws IOException {
         Thread thread = new ClientSendThread(clientSocket, stanza);
