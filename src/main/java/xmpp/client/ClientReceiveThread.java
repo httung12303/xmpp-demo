@@ -1,5 +1,6 @@
 package xmpp.client;
 
+import environment.RecEnviroment;
 import iothread.ReceiveThread;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -11,14 +12,11 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 public class ClientReceiveThread extends ReceiveThread {
 
-    private  RecEnviroment recEnviroment;
+    private RecEnviroment recEnviroment;
     public ClientReceiveThread(SocketWrapper wrapper, RecEnviroment recEnviroment) throws IOException {
         super(wrapper);
     }

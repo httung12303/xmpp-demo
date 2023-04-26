@@ -1,5 +1,7 @@
 package xmpp.client;
 
+import environment.Environment;
+import environment.RecEnviroment;
 import socketwrapper.SocketWrapper;
 import stanza.QueryIQ;
 import stanza.ResultIQ;

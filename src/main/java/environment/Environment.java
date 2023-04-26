@@ -1,4 +1,4 @@
-package xmpp.client;
+package environment;
 
 import java.time.LocalTime;
 import java.util.Random;

@@ -1,4 +1,4 @@
-package xmpp.client;
+package environment;
 
 public class RecEnviroment {
     private float temperature;
