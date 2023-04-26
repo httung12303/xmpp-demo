@@ -32,28 +32,6 @@ public class XMPPServer {
         new ServerReceiveThread(socketWrapper, this.db).start();
     }
 
-    public static void sendExample() {
-        try {
-            XMPPServer server = new XMPPServer(10000);
-            while (true) {
-                Socket connSocket = server.acceptConn();
-                SocketWrapper socketWrapper = new SocketWrapper(connSocket);
-                ResultIQ iq1 = new ResultIQ("client", "server");
-                iq1.addItem("temp", "30");
-                iq1.addItem("humid", "40");
-                server.sendStanza(socketWrapper, iq1);
-                server.sendStanza(socketWrapper, iq1);
-                server.sendStanza(socketWrapper, iq1);
-                server.sendStanza(socketWrapper, iq1);
-                server.sendStanza(socketWrapper, iq1);
-                server.sendStanza(socketWrapper, iq1);
-
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
     public static void receiveExample() {
         try {
             XMPPServer server = new XMPPServer(10000);

@@ -25,6 +25,8 @@ public class ServerReceiveThread extends ReceiveThread {
     public void processStanza(Stanza stanza) {
         if (stanza.getType() == Stanza.RESULT_IQ) {
             new InsertRowThread((ResultIQ) stanza, db).run();
+        } else if (stanza.getType() == Stanza.QUERY_IQ) {
+
         }
     }
 }
