@@ -6,6 +6,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class QueryIQ extends Stanza {
   public QueryIQ(Document document) throws ParserConfigurationException {
@@ -13,21 +15,24 @@ public class QueryIQ extends Stanza {
     this.type = Stanza.QUERY_IQ;
   }
 
-  public QueryIQ(String from, String to) throws ParserConfigurationException {
+  public QueryIQ(String from, String to, String time) throws ParserConfigurationException {
     super();
     Element iq = this.getDocument().createElement("iq");
     iq.setAttribute("from", from);
     iq.setAttribute("to", to);
     iq.setAttribute("type", "get");
+    iq.setAttribute("time", time);
     this.getDocument().appendChild(iq);
     this.type = Stanza.QUERY_IQ;
   }
 
-  public void addQuery(String info) {
-    Element query = this.getDocument().createElement("query");
-    query.setAttribute("info", info);
-    Element iq = (Element) this.getDocument().getFirstChild();
-    iq.appendChild(query);
+  public static LocalTime getTime(QueryIQ iq) {
+    Document doc = iq.getDocument();
+    Element root = (Element) doc.getFirstChild();
+    String timeString = root.getAttribute("time");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    LocalTime time = LocalTime.parse(timeString, formatter);
+    return time;
   }
 
   public String toString() {

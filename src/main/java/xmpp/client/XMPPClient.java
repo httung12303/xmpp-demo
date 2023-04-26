@@ -81,10 +81,7 @@ public class XMPPClient {
         timer.scheduleAtFixedRate(intervalSend, 1000, 10000);
     }
     public Stanza createQueryIQ() throws ParserConfigurationException {
-        QueryIQ queryIQ = new QueryIQ(JID, serverJID);
-        queryIQ.addQuery("temperature");
-        queryIQ.addQuery("humidity");
-        queryIQ.addQuery("brightness");
+        QueryIQ queryIQ = new QueryIQ(JID, serverJID, environment.getTime().toString());
         return queryIQ;
     }
 
