@@ -1,6 +1,7 @@
 package environment;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class Environment {
@@ -40,10 +41,11 @@ public class Environment {
         return brightness;
     }
 
-    public LocalTime getTime() {
+    public String getTime() {
         LocalTime now = LocalTime.now();
         LocalTime result = now.plusHours(addedTime.getHour()).plusMinutes(addedTime.getMinute()).plusSeconds(addedTime.getSecond());
-        return result;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return result.format(formatter);
     }
 
     public static void main(String[] args) {

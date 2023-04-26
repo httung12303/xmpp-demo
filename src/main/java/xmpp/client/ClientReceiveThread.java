@@ -22,9 +22,10 @@ public class ClientReceiveThread extends ReceiveThread {
     }
 
     public void processStanza(Stanza stanza) {
-        if(stanza.getType() == Stanza.RESULT_IQ) {
-            processResultIQ((ResultIQ) stanza);
-        }
+//        if(stanza.getType() == Stanza.RESULT_IQ) {
+//            processResultIQ((ResultIQ) stanza);
+//        }
+        System.out.println(stanza.toString());
     }
 
     public void processResultIQ(ResultIQ iq) {
