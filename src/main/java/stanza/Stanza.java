@@ -68,16 +68,4 @@ abstract public class Stanza {
   public int getType() {
     return this.type;
   }
-
-  public static void main(String[] args) {
-    try {
-      QueryIQ iq = new QueryIQ("1", "2");
-      iq.addQuery("temp");
-      iq.addQuery("humid");
-      Stanza otherIQ = Stanza.getStanzaFromDocumentBytes(Stanza.getDocumentBytes(iq));
-      System.out.println(iq.toString());
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }

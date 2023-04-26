@@ -56,17 +56,4 @@ public class ResultIQ extends Stanza {
     result.append(String.format("</%s>", root.getTagName()));
     return result.toString();
   }
-
-  public static void main(String[] args) {
-    try {
-      ResultIQ iq = new ResultIQ("1", "2");
-      iq.addItem("temperature", "21");
-      iq.addItem("humidity", "40");
-      iq.addItem("brightness", "500");
-      Stanza stanza = Stanza.getStanzaFromDocumentBytes(Stanza.getDocumentBytes(iq));
-      System.out.println(stanza);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
