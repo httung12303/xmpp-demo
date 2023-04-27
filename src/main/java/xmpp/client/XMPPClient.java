@@ -61,7 +61,6 @@ public class XMPPClient {
 
 
     public void sendStanza(Stanza stanza) throws IOException {
-        System.out.println(stanza.toString());
         Thread thread = new ClientSendThread(clientSocket, stanza);
         thread.start();
     }

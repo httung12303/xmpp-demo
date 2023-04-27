@@ -25,7 +25,6 @@ public class ClientReceiveThread extends ReceiveThread {
 //        if(stanza.getType() == Stanza.RESULT_IQ) {
 //            processResultIQ((ResultIQ) stanza);
 //        }
-        System.out.println(stanza.toString());
     }
 
     public void processResultIQ(ResultIQ iq) {

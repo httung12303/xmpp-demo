@@ -16,6 +16,10 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 abstract public class Stanza {
   public static final int QUERY_IQ = 0;
@@ -69,22 +73,33 @@ abstract public class Stanza {
     return this.type;
   }
 
-  public static String getSender(Stanza stanza) {
-    Document doc = stanza.getDocument();
+  public String getSender() {
+    Document doc = getDocument();
     Element root = (Element) doc.getFirstChild();
     return root.getAttribute("from");
   }
 
-  public static String getSReceiver(Stanza stanza) {
-    Document doc = stanza.getDocument();
+  public String getSReceiver() {
+    Document doc = getDocument();
     Element root = (Element) doc.getFirstChild();
     return root.getAttribute("to");
   }
 
-  public static String getTime(Stanza stanza) {
-    Document doc = stanza.getDocument();
+  public String getTime() {
+    Document doc = getDocument();
     Element root = (Element) doc.getFirstChild();
     String time = root.getAttribute("time");
     return time;
+  }
+
+  public void addTimeSent() {
+    long milliseconds = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    Document doc = this.getDocument();
+    Element root = (Element) doc.getFirstChild();
+    root.setAttribute("sent_at", String.valueOf(milliseconds));
+  }
+
+  public long getTimeSent() {
+    return 0;
   }
 }

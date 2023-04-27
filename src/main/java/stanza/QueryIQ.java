@@ -31,12 +31,13 @@ public class QueryIQ extends Stanza {
     Element root = (Element) this.getDocument().getFirstChild();
     NodeList children = root.getChildNodes();
     result.append(String.format(
-            "<%s from='%s' to='%s' type='%s time='%s''>\n",
+            "<%s from='%s' to='%s' type='%s time='%s' sent_at='%s'>\n",
             root.getTagName(),
             root.getAttribute("from"),
             root.getAttribute("to"),
             root.getAttribute("type"),
-            Stanza.getTime(this)));
+            this.getTime(),
+            root.getAttribute("sent_at")));
 
     for (int i = 0; i < children.getLength(); i++) {
       Node node = children.item(i);

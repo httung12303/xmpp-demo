@@ -27,7 +27,6 @@ public class ResultIQ extends Stanza {
     iq.setAttribute("type", "result");
     iq.setAttribute("time", time);
     this.getDocument().appendChild(iq);
-    System.out.println(this.toString());
     this.type = Stanza.RESULT_IQ;
   }
 
@@ -39,8 +38,8 @@ public class ResultIQ extends Stanza {
     root.appendChild(item);
   }
 
-  public static String getInfo(ResultIQ iq, String info) throws XPathExpressionException {
-    Document doc = iq.getDocument();
+  public String getInfo(String info) throws XPathExpressionException {
+    Document doc = getDocument();
     String expression = String.format("//item[@info='%s']", info);
     XPath xPath = XPathFactory.newInstance().newXPath();
     Element element = (Element) xPath.evaluate(expression, doc, XPathConstants.NODE);
@@ -53,12 +52,13 @@ public class ResultIQ extends Stanza {
     NodeList children = root.getChildNodes();
     result.append(
             String.format(
-                    "<%s from='%s' to='%s' type='%s' time='%s'>\n",
+                    "<%s from='%s' to='%s' type='%s' time='%s' sent_at='%s'>\n",
                     root.getTagName(),
                     root.getAttribute("from"),
                     root.getAttribute("to"),
                     root.getAttribute("type"),
-                    Stanza.getTime(this)));
+                    this.getTime(),
+                    root.getAttribute("sent_at")));
 
     for (int i = 0; i < children.getLength(); i++) {
       Node node = children.item(i);
