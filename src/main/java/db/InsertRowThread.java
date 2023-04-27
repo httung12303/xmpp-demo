@@ -27,12 +27,13 @@ public class InsertRowThread extends Thread{
         try {
             String jid = iq.getSender();
             String time = iq.getTime();
-            String temperature = iq.getInfo("temperature");
-            String humidity = iq.getInfo("humidity");
-            String brightness = iq.getInfo("brightness");
-            String delay = String.valueOf(timeReceived - iq.getTimeSent());
+            float temperature = Float.parseFloat(iq.getInfo("temperature"));
+            int humidity = Integer.parseInt(iq.getInfo("humidity"));
+            int brightness = Integer.parseInt(iq.getInfo("brightness"));
+            long delay = timeReceived - iq.getTimeSent();
+            float goodput = (float) (Stanza.getDocumentBytes(iq).length * 1000) / delay;
             synchronized (db) {
-                db.insertIntoClientsTable(jid, time, temperature, humidity, brightness, delay);
+                db.insertIntoClientsTable(jid, time, temperature, humidity, brightness, delay, goodput);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
