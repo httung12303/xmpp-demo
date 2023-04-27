@@ -32,7 +32,7 @@ public class XMPPServer {
         new ServerReceiveThread(socketWrapper, this.db).start();
     }
 
-    public static void receiveExample() {
+    public static void main(String[] args) {
         try {
             XMPPServer server = new XMPPServer(10000);
             while (true) {
@@ -43,9 +43,5 @@ public class XMPPServer {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    public static void main(String[] args) {
-        XMPPServer.receiveExample();
     }
 }
