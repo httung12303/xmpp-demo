@@ -16,7 +16,6 @@ public abstract class SendThread extends Thread {
     this.socketWrapper = wrapper;
     this.stanza = stanza;
   }
-  // Synchronization is needed because we might write multiple messages to client at the same time.
   public void sendStanza() throws IOException, TransformerException {
     final DataOutputStream output = socketWrapper.getOutputStream();
     stanza.addTimeSent();
