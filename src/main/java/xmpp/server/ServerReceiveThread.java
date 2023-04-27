@@ -10,7 +10,9 @@ import stanza.Stanza;
 
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 class SendQueryResponseThread extends Thread {
@@ -26,7 +28,7 @@ class SendQueryResponseThread extends Thread {
     @Override
     public void run() {
         try {
-            String clientTime = QueryIQ.getTime(iq);
+            String clientTime = iq.getTime();
             String query = String.format("SELECT * FROM recommendation WHERE HOUR(time)=HOUR('%s');", clientTime);
             ResultSet rs = db.executeSelectQuery(query);
             if(rs.next()) {
@@ -35,7 +37,7 @@ class SendQueryResponseThread extends Thread {
                 String brightness = rs.getString("brightness");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
                 String formattedTime = LocalTime.now().format(formatter);
-                ResultIQ res = new ResultIQ(Stanza.getSReceiver(iq), Stanza.getSender(iq), formattedTime);
+                ResultIQ res = new ResultIQ(iq.getSReceiver(), iq.getSender(), formattedTime);
                 res.addItem("temperature", temperature);
                 res.addItem("humidity", humidity);
                 res.addItem("brightness", brightness);
@@ -58,7 +60,8 @@ public class ServerReceiveThread extends ReceiveThread {
     // Update db
     public void processStanza(Stanza stanza) {
         if (stanza.getType() == Stanza.RESULT_IQ) {
-            new InsertRowThread((ResultIQ) stanza, db).start();
+            long now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            new InsertRowThread((ResultIQ) stanza, db, now).start();
         } else if (stanza.getType() == Stanza.QUERY_IQ) {
             new SendQueryResponseThread(this.getSocketWrapper(), (QueryIQ) stanza, db).start();
         }
