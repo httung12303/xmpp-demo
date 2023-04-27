@@ -25,13 +25,13 @@ class SendQueryResponseThread extends Thread {
         this.socketWrapper = socketWrapper;
         this.iq = iq;
     }
-    @Override
-    public void run() {
+
+    public void sendRecommendation() {
         try {
             String clientTime = iq.getTime();
             String query = String.format("SELECT * FROM recommendation WHERE HOUR(time)=HOUR('%s');", clientTime);
             ResultSet rs = db.executeSelectQuery(query);
-            if(rs.next()) {
+            if (rs.next()) {
                 String temperature = rs.getString("temperature");
                 String humidity = rs.getString("humidity");
                 String brightness = rs.getString("brightness");
@@ -47,6 +47,11 @@ class SendQueryResponseThread extends Thread {
             System.out.println(e);
         }
     }
+
+    @Override
+    public void run() {
+        sendRecommendation();
+    }
 }
 
 public class ServerReceiveThread extends ReceiveThread {
@@ -57,10 +62,9 @@ public class ServerReceiveThread extends ReceiveThread {
         this.db = db;
     }
 
-    // Update db
     public void processStanza(Stanza stanza) {
+        long now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         if (stanza.getType() == Stanza.RESULT_IQ) {
-            long now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             new InsertRowThread((ResultIQ) stanza, db, now).start();
         } else if (stanza.getType() == Stanza.QUERY_IQ) {
             new SendQueryResponseThread(this.getSocketWrapper(), (QueryIQ) stanza, db).start();
