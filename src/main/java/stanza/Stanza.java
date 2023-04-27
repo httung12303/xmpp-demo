@@ -5,6 +5,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -100,6 +101,8 @@ abstract public class Stanza {
   }
 
   public long getTimeSent() {
-    return 0;
+    Document doc = this.getDocument();
+    Element root = (Element) doc.getFirstChild();
+    return Long.parseLong(root.getAttribute("sent_at"));
   }
 }
