@@ -18,6 +18,7 @@ public class DBManager {
     public DBManager() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
+        resetClientTable();
         startClientRemoveThread();
     }
 
@@ -81,5 +82,15 @@ public class DBManager {
     private void deleteRow(String jid) throws SQLException {
         Statement statement = connection.createStatement();
         statement.executeUpdate(String.format("DELETE FROM clients WHERE jid = '%s'", jid));
+    }
+
+    private void resetClientTable() throws SQLException {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("TRUNCATE TABLE clients;");
+        } catch (Exception ignore) {
+
+        }
+
     }
 }
