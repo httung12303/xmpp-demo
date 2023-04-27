@@ -1,5 +1,6 @@
 package xmpp.client;
 
+import environment.Environment;
 import environment.RecEnviroment;
 import iothread.ReceiveThread;
 import org.w3c.dom.Document;
@@ -15,26 +16,26 @@ import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 
 public class ClientReceiveThread extends ReceiveThread {
-
-    private RecEnviroment recEnviroment;
-    public ClientReceiveThread(SocketWrapper wrapper, RecEnviroment recEnviroment) throws IOException {
+    private Environment environment;
+    public ClientReceiveThread(SocketWrapper wrapper, Environment environment) throws IOException {
         super(wrapper);
+        this.environment = environment;
     }
 
     public void processStanza(Stanza stanza) {
-//        if(stanza.getType() == Stanza.RESULT_IQ) {
-//            processResultIQ((ResultIQ) stanza);
-//        }
+        if(stanza.getType() == Stanza.RESULT_IQ) {
+            processResultIQ((ResultIQ) stanza);
+        }
     }
 
     public void processResultIQ(ResultIQ iq) {
         try {
-            float temp = Float.valueOf(getInfo(iq, "temperature"));
-            int humidity = Integer.valueOf(getInfo(iq, "humidity"));
-            int brightness = Integer.valueOf(getInfo(iq, "brightness"));
-            recEnviroment.update(temp, humidity, brightness);
+            float temp = Float.parseFloat(getInfo(iq, "temperature"));
+            int humidity = Integer.parseInt(getInfo(iq, "humidity"));
+            int brightness = Integer.parseInt(getInfo(iq, "brightness"));
+            environment.update(temp, humidity, brightness);
         }
-        catch (Exception e) {
+        catch (Exception ignored) {
         }
     }
 

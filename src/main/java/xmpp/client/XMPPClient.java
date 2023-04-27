@@ -19,7 +19,6 @@ public class XMPPClient {
     private String JID;
     private String serverJID;
     private Environment environment;
-
     private RecEnviroment recEnviroment;
 
     public XMPPClient(String ip, int port) throws IOException {
@@ -31,8 +30,13 @@ public class XMPPClient {
         environment = new Environment();
     }
 
+    public void sendStanza(Stanza stanza) throws IOException {
+        Thread thread = new ClientSendThread(clientSocket, stanza);
+        thread.start();
+    }
+
     public void startReceiveThread() throws IOException {
-        receiveThread = new ClientReceiveThread(clientSocket, recEnviroment);
+        receiveThread = new ClientReceiveThread(clientSocket, environment);
         receiveThread.start();
     }
 
@@ -59,12 +63,6 @@ public class XMPPClient {
         timer.scheduleAtFixedRate(intervalSend, 1000, 2000);
     }
 
-
-    public void sendStanza(Stanza stanza) throws IOException {
-        Thread thread = new ClientSendThread(clientSocket, stanza);
-        thread.start();
-    }
-
     public void startQuerySendTimer() {
         TimerTask intervalSend = new TimerTask() {
             @Override
@@ -77,7 +75,7 @@ public class XMPPClient {
             }
         };
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(intervalSend, 1000, 10000);
+        timer.scheduleAtFixedRate(intervalSend, 1000, 2000);
     }
     public Stanza createQueryIQ() throws ParserConfigurationException {
         QueryIQ queryIQ = new QueryIQ(JID, serverJID, environment.getTime());
