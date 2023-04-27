@@ -45,32 +45,4 @@ public class ResultIQ extends Stanza {
         Element element = (Element) xPath.evaluate(expression, doc, XPathConstants.NODE);
         return element.getAttribute("value");
     }
-
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        Element root = (Element) this.getDocument().getFirstChild();
-        NodeList children = root.getChildNodes();
-        result.append(
-                String.format(
-                        "<%s from='%s' to='%s' type='%s' time='%s' sent_at='%s'>\n",
-                        root.getTagName(),
-                        root.getAttribute("from"),
-                        root.getAttribute("to"),
-                        root.getAttribute("type"),
-                        this.getTime(),
-                        root.getAttribute("sent_at")));
-
-        for (int i = 0; i < children.getLength(); i++) {
-            Node node = children.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element ele = (Element) node;
-                result.append(
-                        String.format(
-                                "\t<%s info='%s' value='%s'/>\n",
-                                ele.getTagName(), ele.getAttribute("info"), ele.getAttribute("value")));
-            }
-        }
-        result.append(String.format("</%s>", root.getTagName()));
-        return result.toString();
-    }
 }

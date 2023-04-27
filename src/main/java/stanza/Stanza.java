@@ -51,7 +51,7 @@ abstract public class Stanza {
   }
 
   public static Stanza getStanzaFromDocumentBytes(byte[] documentBytes)
-      throws ParserConfigurationException, IOException, SAXException {
+          throws ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
     ByteArrayInputStream inputStream = new ByteArrayInputStream(documentBytes);
