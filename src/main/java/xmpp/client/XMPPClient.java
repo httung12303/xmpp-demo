@@ -54,7 +54,7 @@ public class XMPPClient {
             public void run() {
                 try {
                     sendStanza(getState());
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -69,7 +69,7 @@ public class XMPPClient {
             public void run() {
                 try {
                     sendStanza(createQueryIQ());
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -78,16 +78,20 @@ public class XMPPClient {
         timer.scheduleAtFixedRate(intervalSend, 1000, 2000);
     }
     public Stanza createQueryIQ() throws ParserConfigurationException {
-        QueryIQ queryIQ = new QueryIQ(JID, serverJID, environment.getTime());
-        return queryIQ;
+        return new QueryIQ(JID, serverJID, environment.getTime());
+    }
+
+    public void start() throws IOException {
+        startReceiveThread();
+        startInfoSendTimer();
+        startQuerySendTimer();
     }
 
     public static void main(String[] args) {
         try {
             XMPPClient client = new XMPPClient("192.168.1.107", 10000);
-            client.startReceiveThread();
-            client.startInfoSendTimer();
-            client.startQuerySendTimer();
+            client.start();
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
