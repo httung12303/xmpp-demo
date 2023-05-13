@@ -80,7 +80,7 @@ abstract public class Stanza {
     return root.getAttribute("from");
   }
 
-  public String getSReceiver() {
+  public String getReceiver() {
     Document doc = getDocument();
     Element root = (Element) doc.getFirstChild();
     return root.getAttribute("to");
