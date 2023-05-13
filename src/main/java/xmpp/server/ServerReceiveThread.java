@@ -37,7 +37,7 @@ class SendQueryResponseThread extends Thread {
                 String brightness = rs.getString("brightness");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
                 String formattedTime = LocalTime.now().format(formatter);
-                ResultIQ res = new ResultIQ(iq.getSReceiver(), iq.getSender(), formattedTime);
+                ResultIQ res = new ResultIQ(iq.getReceiver(), iq.getSender(), formattedTime);
                 res.addItem("temperature", temperature);
                 res.addItem("humidity", humidity);
                 res.addItem("brightness", brightness);
