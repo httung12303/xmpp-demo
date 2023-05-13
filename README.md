@@ -18,7 +18,7 @@ As in the protocol's official RFC:
 
 > "**Extensible Messaging and Presence Protocol(XMPP)** is a protocol for streaming Extensible Markup Language (XML) elements in order to exchange structured data in close to real time between any two network endpoints."
 
-In simple words, XMPP can be considered as a protocol for transporting small pieces of data between two places. These pieces of data are in a structured format ( XML ).
+In simple words, XMPP can be considered as a protocol for transporting small pieces of data between two places. These pieces of data are in a structured format ( XML ) - Stanza.
 
 ## **Stanza**
 
@@ -99,7 +99,109 @@ This attribute is also **mandatory** in an IQ stanza.
 
 Since XMPP is used for Instant messaging, the interaction is generally dependent on the usage. There is no standard where the client connects to server and says _'HELO server '_ and server response with _'200 Hello client'_. The programmer decides this interaction.
 
-## Application overview
+## **Application overview**
 
-Our application consists of 2 components: server and client. The clients will simulate devices which keep track and control the status of rooms, including their temperature, humidity and brightness based on the time of each room. Periodically, these clients send their status to server. Server receives these information and stores them in a MySQL database. Also, clients sometimes send queries about the recommended status of the rooms. Upon receiving the query, server immediately response with the recommendation, which we will store in our database. Finally, server checks the last update time stamp of clients in the database and remove them if they have not updated after a certain amount of time.
+Our application consists of 2 components: **server** and **client**. Each client will simulate an IoT device that controls the environment of a room, including its temperature, humidity and brightness based on the time of that room.
+
+Periodically, these clients send their status to server. Server receives these information and stores them in a MySQL database.
+
+Also, clients sometimes send queries about the recommended status of the rooms. Upon receiving the query, server immediately response with the recommendation, which we will store in our database. Finally, server checks the last update time stamp of clients in the database and remove them if they have not updated after a certain amount of time.
+
+## **Our XMPP protocol**
+
+Now that you have a decent understanding of the protocol and what the application looks like, let's discuss the version of XMPP that I mentioned at the beginning of this article.
+
+Again, it's an Instant Messaging protocol, so the interaction between server and clients is not concerned here. All that's left for us to discuss is therefore the Stanzas.
+
+Take a look back into the [**Application overview**](#application-overview) section. The only information we are exchanging is the **environment status** of the rooms, the **queries** that clients send and the **responses** from server - which are just more **environment status**. What does that mean? We are ONLY doing info/query messaging. Therefore, the only suitable type of Stanza will of course be **IQ** consisting of 2 types: info (type='result') and query (type='get').
+
+In general, we only need some basic properties in our IQs:
+
+- from
+- to
+- type
+
+We excluded the **id** property since we will be responding from server right after receiving a query from clients in separate connections, which makes matching the query's and response's id redundant.
+
+That's really all we have to say about the protocol. Now, let's dive into the details of our application.
+
+## **Application details**
+
+Our application can be split into 4 main components:
+
+- Server
+- Clients
+- Database
+- User Interface
+
+Before going into Server and Client, let's look at some of the common sub-components that the 2 share:
+
+## **Threads**
+
+Our application will need a Server and multiple clients exchanging data, which means streams of data! If we were to handle them synchronously, the programming will be much easier and less prone to errors. However, it would be extremely slow. On the other hand, asynchronicity - the option we chose - will provide the **"close to real-time"** speed, which serves the purpose of XMPP - **Instant Messaging**.
+
+While there are many types of thread in this project that provide different functionalities such as database interactions, the 2 most important ones, in my opinion are the I/O threads. Client and Server both have the own extension of these threads, but the general idea is as follow:
+
+### Receive Thread
+
+As the name implies, this thread is made to receive data. A receive thread is attached to a host only while a host can have as many receive threads as it may need. For instance, a Client only need one to receive data from it's Server and a Server should have one for each Client it's communicating with.
+
+But how does it work? It simply **waits** for an incoming message from the other host and process it:
+
+```java
+public abstract class ReceiveThread extends Thread {
+
+  private final SocketWrapper socketWrapper;
+
+  public Stanza receiveStanza();
+
+  abstract public void processStanza(Stanza stanza);
+  @Override
+  public void run() {
+    while(true) {
+      try {
+        // Some more logic.
+        Stanza stanza = receiveStanza();
+        processStanza(stanza);
+      } catch(Exception e) {
+        // Handle exceptions.
+      }
+    }
+  }
+}
+```
+
+### Send Thread
+
+Threads of this type is initiated whenever Server or Clients want to send Stanzas. The hosts attach the Stanza they want to send and the **connection socket** on which they are communicating onto a Send Thread and start it. In other words, Send Thread is similar to a postal service, you provide the "from" and "to" (the connection) on your letter (the Stanza) and let the service provider (our Send Thread) take care of the rest. Here's how it looks:
+
+```java
+public abstract class SendThread extends Thread {
+
+  private final SocketWrapper socketWrapper;
+
+  private final Stanza stanza;
+
+  public void sendStanza();
+
+  @Override
+  public void run() {
+    try {
+      // Some more logic.
+      sendStanza();
+    } catch (Exception e) {
+      // Handle exceptions.
+    }
+  }
+}
+```
+
+## Socket Wrapper
+
+You might wonder what the SocketWrapper class above is. Well, it's simply wraps a Socket along with DataOutputStream and DataInputStream that encapsulate the Socket's I/O streams. Why? In order to use I/O stream methods with a Socket's streams, we need to wrap it inside I/O streams object provided by the java.io package. In other words, we need to do `new DataInputStream(socket.getInputStream())` or `new DataOutputStream(socket.getOutputStream())` for each of the streams we use. If we simply use the Socket class, every time the hosts exchange data, they need to create new I/O stream objects. This is not only repetitive but also consume a lot of resources.
+
+By creating 2 objects and save them for each Socket's I/O streams, we not only avoid that problem, but also allow us to perform `synchronous(obj)` blocks with these streams. The block basically tells threads that use some common resources to work synchronously. As I mentioned above, a client send 2 types of message, in 2 different send threads but on the same connection. Without the synchronous block, we may encounter problems when the 2 threads write to the same stream at the same time.
+
+## Stanza
+
 
