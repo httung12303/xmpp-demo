@@ -23,11 +23,6 @@ public class XMPPServer {
         return serverSocket.accept();
     }
 
-    public void sendStanza(SocketWrapper wrapper, Stanza stanza) throws IOException {
-        Thread thread = new ServerSendThread(wrapper, stanza);
-        thread.start();
-    }
-
     public void startReceiveThread(SocketWrapper socketWrapper) throws IOException {
         new ServerReceiveThread(socketWrapper, this.db).start();
     }
