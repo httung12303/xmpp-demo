@@ -205,6 +205,7 @@ By creating 2 objects and save them for each Socket's I/O streams, we not only a
 ## Stanza
 
 It should be easier to understand to look at the code first:
+
 ```java
   abstract public class Stanza {
     // Stanza type identifiers
@@ -225,7 +226,9 @@ It should be easier to understand to look at the code first:
     // Getters
   }
 ```
+
 The methods' name should be self-explanatory:
+
 - We use **type** constants and `getType` method to classify different types of Stanza.
 - The document object stores our data in XML format:
   - `getDocumentBytes` converts this object into a byte array, which is the actual data in the transmission.
@@ -241,10 +244,76 @@ public class XMPPServer {
   private final ServerSocket serverSocket;
   private final DBManager db;
 
-  public void sendStanza(SocketWrapper wrapper, Stanza stanza);
-
   public void startReceiveThread(SocketWrapper socketWrapper);
 
-  
+  public void start() {
+    try {
+      Socket connSocket = serverSocket.accept();
+      SocketWrapper socketWrapper = new SocketWrapper(connSocket);
+      startReceiveThread(socketWrapper);
+    } catch(Exception e) {
+      // Handle exceptions
+    }
+  }
 }
 ```
+
+As you can see, the Server implementation is very simple. It waits for an incoming connection and starts a thread which, you may guess, receive Stanzas from the Client which initiated the connection.
+
+There's also a DBManager object in this class that handles all the data received from Clients that we'll cover later.
+
+### **Receive Thread on Server side**
+
+This thread is rather straight forward so the following pseudo code is all you need:
+
+```java
+public class ServerReceiveThread extends ReceiveThread {
+    private final DBManager db;
+
+    public void processStanza(Stanza stanza) {
+      if (stanza.getType() == Stanza.RESULT_IQ) {
+        // Starts a thread which inserts the information contained in the Result IQ.
+      } else if (stanza.getType() == Stanza.QUERY_IQ) {
+        // Starts a thread which sends a Result IQ in response to the Query IQ.
+      }
+    }
+}
+```
+### **The database**
+
+Let's talk a little bit about the database which the DBManager class is working with before moving on. There are only 2 tables in this so called "xmpp_demo
+" database:
+- **clients** saves the information sent by clients, including:
+  - **jid** - the client identifier (port@ip).
+  - **time** - the "fake" time of each client, which is different from one another (think of it like clients are in different timezones).
+  - **The environment status** consists of temperature, humidity and brightness.
+  - **Performance info** - delay and goodput. Remember that we add a **time stamp** (real time, not the **time** mentioned above) before each Stanza is sent to calculate the delay. And we sent Stanza in the form of the Document object's byte array, so the goodput is the array's length divided by the delay.
+  - Finally, a **last_update** column that stores the real time at which a client last sent information to the server.
+- **recommendation** contains the recommended environment status for each hour. Clients send queries along with their "fake" time and server response with the recommendation accordingly.
+
+Note that we use more threads to interact with the database to further increase server's performance. The implementations and how they work are not our focus so we will not cover them.
+
+## **Client**
+
+The code is quite long, but here's all you need to know:
+
+```java
+public class XMPPClient {
+  private Environment environment;
+
+  public void start() {
+    startReceiveThread(); // The purpose of this thread should be clear by now
+    startInfoSendTimer(); // Starts a Timer object that send the environment status periodically
+    startQuerySendTimer(); // Starts a Timer object that send the query for recommendation periodically
+  }
+}
+```
+
+There are extensions of SendThread and ReceiveThread, but they are not that significant. One thing to note, is that upon receiving the query response from server, clients update their status gradually until the recommendation is fulfilled.
+
+## **Performance**
+In case you skipped it, the performance status of our application was mentioned [here](#the-database). 
+
+That leaves us with the GUI.
+
+## **GUI**
