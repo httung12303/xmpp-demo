@@ -19,22 +19,26 @@ public class XMPPServer {
         db = new DBManager();
     }
 
-    public Socket acceptConn() throws IOException {
-        return serverSocket.accept();
-    }
-
     public void startReceiveThread(SocketWrapper socketWrapper) throws IOException {
         new ServerReceiveThread(socketWrapper, this.db).start();
+    }
+
+    public void start() {
+        try {
+            while (true) {
+                Socket connSocket = serverSocket.accept();
+                SocketWrapper socketWrapper = new SocketWrapper(connSocket);
+                startReceiveThread(socketWrapper);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
         try {
             XMPPServer server = new XMPPServer(10000);
-            while (true) {
-                Socket connSocket = server.acceptConn();
-                SocketWrapper socketWrapper = new SocketWrapper(connSocket);
-                server.startReceiveThread(socketWrapper);
-            }
+            server.start();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
