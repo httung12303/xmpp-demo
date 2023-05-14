@@ -204,4 +204,47 @@ By creating 2 objects and save them for each Socket's I/O streams, we not only a
 
 ## Stanza
 
+It should be easier to understand to look at the code first:
+```java
+  abstract public class Stanza {
+    // Stanza type identifiers
+    public static final int QUERY_IQ = 0;
+    public static final int RESULT_IQ = 1;
 
+    // The actual XML
+    private Document document;
+
+    public int getType();
+
+    public static byte[] getDocumentBytes(Stanza stanza);
+
+    public static Stanza getStanzaFromDocumentBytes(byte[] documentBytes);
+
+    public void addTimeSent();
+
+    // Getters
+  }
+```
+The methods' name should be self-explanatory:
+- We use **type** constants and `getType` method to classify different types of Stanza.
+- The document object stores our data in XML format:
+  - `getDocumentBytes` converts this object into a byte array, which is the actual data in the transmission.
+  - `getStanzaFromDocumentBytes` takes a byte array, converts it into a Document object and creates a Stanza from that Document object. The sub-class of the Stanza is determined by the attributes of the Document object (i.e `root` element type, the `type` attribute...)
+  - `addTimeSent` is responsible for adding a time stamp `sent_at` in milliseconds indicating the time at which the Stanza was sent. This method is invoked right before `sendThread`s start writing into input streams, more specifically, right before the `DataInputStream.write()` invocation.
+
+And that's the gist of Stanza class. We can now start discussing the most important components: Server and Client.
+
+## **Server**
+
+```java
+public class XMPPServer {
+  private final ServerSocket serverSocket;
+  private final DBManager db;
+
+  public void sendStanza(SocketWrapper wrapper, Stanza stanza);
+
+  public void startReceiveThread(SocketWrapper socketWrapper);
+
+  
+}
+```
