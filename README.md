@@ -171,7 +171,7 @@ public abstract class ReceiveThread extends Thread {
 }
 ```
 
-### Send Thread
+### **Send Thread**
 
 Threads of this type is initiated whenever Server or Clients want to send Stanzas. The hosts attach the Stanza they want to send and the **connection socket** on which they are communicating onto a Send Thread and start it. In other words, Send Thread is similar to a postal service, you provide the "from" and "to" (the connection) on your letter (the Stanza) and let the service provider (our Send Thread) take care of the rest. Here's how it looks:
 
@@ -196,15 +196,15 @@ public abstract class SendThread extends Thread {
 }
 ```
 
-## Socket Wrapper
+## **Socket Wrapper**
 
 You might wonder what the SocketWrapper class above is. Well, it's simply wraps a Socket along with DataOutputStream and DataInputStream that encapsulate the Socket's I/O streams. Why? In order to use I/O stream methods with a Socket's streams, we need to wrap it inside I/O streams object provided by the java.io package. In other words, we need to do `new DataInputStream(socket.getInputStream())` or `new DataOutputStream(socket.getOutputStream())` for each of the streams we use. If we simply use the Socket class, every time the hosts exchange data, they need to create new I/O stream objects. This is not only repetitive but also consume a lot of resources.
 
 By creating 2 objects and save them for each Socket's I/O streams, we not only avoid that problem, but also allow us to perform `synchronous(obj)` blocks with these streams. The block basically tells threads that use some common resources to work synchronously. As I mentioned above, a client send 2 types of message, in 2 different send threads but on the same connection. Without the synchronous block, we may encounter problems when the 2 threads write to the same stream at the same time.
 
-## Stanza
+## **Stanza**
 
-It should be easier to understand to look at the code first:
+It should be easier to understand if you look at the code first:
 
 ```java
   abstract public class Stanza {
@@ -231,7 +231,7 @@ The methods' name should be self-explanatory:
 
 - We use **type** constants and `getType` method to classify different types of Stanza.
 - The document object stores our data in XML format:
-  - `getDocumentBytes` converts this object into a byte array, which is the actual data in the transmission.
+  - `getDocumentBytes` converts Stanza into byte arrays, which is the actual data in the transmission.
   - `getStanzaFromDocumentBytes` takes a byte array, converts it into a Document object and creates a Stanza from that Document object. The sub-class of the Stanza is determined by the attributes of the Document object (i.e `root` element type, the `type` attribute...)
   - `addTimeSent` is responsible for adding a time stamp `sent_at` in milliseconds indicating the time at which the Stanza was sent. This method is invoked right before `sendThread`s start writing into input streams, more specifically, right before the `DataInputStream.write()` invocation.
 
