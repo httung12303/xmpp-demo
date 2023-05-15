@@ -2,7 +2,7 @@
 
 ## **Direction**
 
-We will build a simplified version of the XMPP protocol including only what we need for our IOT application. Why? Because XMPP was created for _**Instant messaging**_ while our application involves only with the communication between a servers and multiple clients, many of its functionalities are redundant. We will discuss this further in later sections of this article.
+We will build a simplified version of the XMPP protocol including only what we need for our IOT application. Why? Because XMPP was created for _**Instant messaging**_ while our application involves only with the communication between a server and multiple clients, many of its functionalities are redundant. We will discuss this further in later sections of this article.
 
 Back to the direction, these 3 main steps will be taken to recreate XMPP:
 
