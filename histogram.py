@@ -29,6 +29,13 @@ brightness = []
 delay = []
 goodput = []
 jids = []
+
+goodput_tb =[0 for _ in range(10)]
+delay_tb=[0 for _ in range(10)]
+goodput_max = 0
+goodput_min = 0
+delay_max = 0
+delay_min = 0
 # jid_vals = []
 
 
@@ -107,7 +114,6 @@ class Table:
 
     def update(self, data):
         self.table.delete(*self.table.get_children())
-        print(data)
 
         for i, row in enumerate(data):
             last_update_timestamp = row[-1] / 1000
@@ -167,10 +173,9 @@ class Correlate:
         self.figure_canvas.get_tk_widget().grid(row=row, column=col)
 
     def update(self, data):
-        average = sum(data)/len(data)
         self.axes.cla()
         # average_delay = sum(delay) / len(delay)
-        self.axes.plot(self._range, [average] * 100, label=self.label)
+        self.axes.plot(self._range, [data] * 100, label=self.label)
         # self.figure.canvas.draw_idle()
         self.figure_canvas.draw_idle()
 
@@ -268,17 +273,81 @@ if __name__ == "__main__":
     app = App()
     data = [jids, temperature, brightness, humidity, goodput, delay]
     connection = mysql.connector.connect(
-        host="localhost", user="root", password="123456789", database="xmpp_demo"
+        host="localhost", user="root", password="123456789", database="xmpp_demo", autocommit=True
     )
 
-    def update():
+    def laydulieu_goodput(arr):
+
         for i in range(len(data)):
             data[i].clear()
 
         cursor = connection.cursor()
 
         query = (
-            "SELECT jid, temperature, brightness, humidity, goodput, delay FROM clients"
+            "SELECT goodput FROM clients;"
+        )
+        cursor.execute(query)
+        results = cursor.fetchall()
+        total_goodput = 0
+        count = 0
+        global goodput_min
+        global goodput_max
+        res1 = results[0]
+        goodput_min=res1[0]
+        #goodput_min = results[0]
+        for res in results:
+            if goodput_max < (res[0]+0):
+                goodput_max = (res[0]+0)
+            if goodput_min > (res[0]+0):
+                goodput_min = (res[0]+0)
+            total_goodput += res[0]
+            count+= 1
+
+        index = (50-count)/5
+        index = int(index)
+        index= 9-index
+        arr[index] = total_goodput/count
+
+
+    def laydulieu_delay(arr):
+
+        for i in range(len(data)):
+            data[i].clear()
+
+        cursor = connection.cursor()
+
+        query = (
+            "SELECT delay FROM clients;"
+        )
+        cursor.execute(query)
+        results = cursor.fetchall()
+        total_delay = 0
+        count = 0
+        global delay_min
+        global delay_max
+        res1 = results[0]
+        delay_min=res1[0]
+        for res in results:
+            if delay_max < (res[0]+0):
+                delay_max = (res[0]+0)
+            if delay_min > (res[0]+0):
+                delay_min = (res[0]+0)
+            total_delay += res[0]
+            count+= 1
+        index = (50-count)/5
+        index = int(index)
+        index= 9-index
+        arr[index] = total_delay/count
+
+    def update():
+
+        for i in range(len(data)):
+            data[i].clear()
+
+        cursor = connection.cursor()
+
+        query = (
+            "SELECT jid, temperature, brightness, humidity, goodput, delay FROM clients;"
         )
         cursor.execute(query)
         results = cursor.fetchall()
@@ -295,11 +364,22 @@ if __name__ == "__main__":
         query = "SELECT * FROM clients"
         cursor.execute(query)
         res = cursor.fetchall()
-        connection.commit()
         app.table.update(res)
 
         cursor.close()
-        app.after(1000, update)
+
+        app.after(0, laydulieu_goodput(goodput_tb))
+        app.after(0, laydulieu_delay(delay_tb))
+        print("Trung binh goodput: ", goodput_tb)
+        print("Trung binh delay: ", delay_tb)
+        print("goodput max: ", goodput_max)
+        print("goodput min: ", goodput_min)
+        print("Delay max: ", delay_max)
+        print("Delay min: ", delay_min)
+        print(" ")
+
+        app.after(5000, update)
+
 
     app.configure(background="white")
     app.resizable(False, False)
