@@ -23,9 +23,10 @@ import threading
 matplotlib.use("TkAgg")
 title = "Data Statistic"
 padx = pady = 5
-figsize = (4, 3)
+figsize = (4, 4)
 dpi = 100
 
+# Display a new window with a list of clients which existed in the database 
 class Table:
     def __init__(self, master):
         newWindow = Toplevel(master, width=200)
@@ -63,10 +64,8 @@ class Table:
             )  # Định dạng datetime
             self.table.insert("", tk.END, text=str(i + 1), values=row)
 
-# The search bar used to search for a client to show its statistic
 
-# This barchart is to show visualize the corelation between the number of clients and the delay or goodput, 
-# and it only serves these 2 type of data, specified in the type attribute.
+# This barchart is to show visualize the corelation between the number of clients and the delay or goodput.
 class BarChart:    
     def __init__(self, title, xLabel, yLabel, xPoint, yPoint, master, row, col):
         figure = Figure(figsize=figsize, dpi=dpi)
@@ -136,8 +135,8 @@ class Data:
     "Class Data"
 
     rows=10
-    goodbut_average = [0 for _ in range(10)]
-    delay_average = [0 for _ in range(10)]
+    goodbut_average = [0 for _ in range(40)]
+    delay_average = [0 for _ in range(40)]
     connection = mysql.connector.connect(
         host="localhost", user="root", password="12345678", database="xmpp_demo", autocommit=True
         )
@@ -153,7 +152,13 @@ class Data:
         )
         self.cursor.execute(query)
         self.rows = self.cursor.fetchall()
-
+        
+    def getAllData(self):
+        query = "SELECT * FROM clients"
+        self.cursor.execute(query)
+        res = self.cursor.fetchall()
+        return res
+    
     def getNumClients(self):
         return len(self.rows)
 
@@ -228,7 +233,7 @@ class Data:
         total_goodput = 0
         for res in self.rows:
             total_goodput += res[4]
-        index = 9 - int((50-count)/5)
+        index = 39 - int((200-count)/5)
         if count>0:
             self.goodbut_average[index] = total_goodput/count
         return self.goodbut_average
@@ -260,7 +265,7 @@ class Data:
         total_delay = 0
         for res in self.rows:
             total_delay += res[5]
-        index = 9 - int((50-count)/5)
+        index = 39 - int((200-count)/5)
         if count>0:
             self.delay_average[index] = total_delay/count
         return self.delay_average
@@ -321,7 +326,7 @@ class GUI(tk.Tk):
                 xlabel="Ánh sáng",
                 ylabel="Số lượng",
                 data=self.data.getBright(),
-                bins=np.arange(0, 800, 100),
+                bins=np.arange(0, 5000, 500),
                 master=frm_main,
                 row=0,
                 col=1,
@@ -346,7 +351,7 @@ class GUI(tk.Tk):
                 title="Số clients và Goodput trung bình",
                 xLabel="Số Client",
                 yLabel="ms",
-                xPoint=np.arange(0,50,5),
+                xPoint=np.arange(0,200,5),
                 yPoint=self.data.getGoodput_average(),
                 master=frm_main,
                 row=1,
@@ -357,7 +362,7 @@ class GUI(tk.Tk):
 
         hists.append(
             BarChart(
-                xPoint=np.arange(0,50,5),
+                xPoint=np.arange(0,200,5),
                 title="Số clients và Delay trung bình",
                 xLabel="Số Client",
                 yLabel="ms",
@@ -377,7 +382,7 @@ class GUI(tk.Tk):
         hists[2].update(self.data.getHumid())
         hists[3].update(self.data.getGoodput_average())
         hists[4].update(self.data.getDelay_average())
-        self.table.update(self.data.rows)
+        self.table.update(self.data.getAllData())
         self.after(2000, self.update)
 
 class GUI2:
