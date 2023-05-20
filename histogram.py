@@ -165,3 +165,105 @@ class Data:
 
     def update(self):
         self.getdata()
+
+# Display a new window with a list of clients which existed in the database
+class Table:
+    def __init__(self, master):
+        newWindow = Toplevel(master, width=200)
+        self.table = ttk.Treeview(newWindow)
+        self.table.pack()
+        self.table["columns"] = (
+            "jid",
+            "time",
+            "temperature",
+            "humidity",
+            "brightness",
+            "delay",
+            "goodput",
+            "last_update",
+        )
+        self.table.heading("#0", text="ID")
+        self.table.heading("jid", text="JID")
+        self.table.heading("time", text="Time")
+        self.table.heading("temperature", text="Temperature")
+        self.table.heading("humidity", text="Humidity")
+        self.table.heading("brightness", text="Brightness")
+        self.table.heading("delay", text="Delay")
+        self.table.heading("goodput", text="Goodput")
+        self.table.heading("last_update", text="Last Update")
+
+    def update(self, data):
+        self.table.delete(*self.table.get_children())
+
+        for i, row in enumerate(data):
+            last_update_timestamp = row[-1] / 1000
+            last_update_datetime = datetime.fromtimestamp(last_update_timestamp)
+            row = list(row)
+            row[-1] = last_update_datetime.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )  # Định dạng datetime
+            self.table.insert("", tk.END, text=str(i + 1), values=row)
+
+# This barchart is to show visualize the corelation between the number of clients and the delay or goodput.
+class BarChart:
+    def __init__(self, title, xLabel, yLabel, xPoint, yPoint, master, row, col):
+        figure = Figure(figsize=figsize, dpi=dpi)
+        self.figure_canvas = FigureCanvasTkAgg(figure, master=master)
+
+        # Tilte, label for x and y axis
+        self.xLabel = xLabel
+        self.yLabel = yLabel
+        self.title = title
+
+        self.axes = figure.add_subplot()
+        self.xPoint = xPoint
+        self.yPoint = yPoint
+        self.xSize = len(yPoint)
+        self.axes.bar(xPoint, yPoint)
+        self.axes.set_title(title)
+        self.axes.set_xlabel(xlabel=xLabel)
+        self.axes.set_ylabel(ylabel=yLabel)
+        #self.axes.legend()
+        self.figure_canvas.get_tk_widget().grid(row=row, column=col)
+    def update(self, yPoints):
+        self.axes.cla()
+        self.axes.set_title(self.title)
+        self.axes.set_xlabel(self.xLabel)
+        self.axes.set_ylabel(self.yLabel)
+        self.yPoints = np.zeros(10)
+        self.axes.bar(self.xPoint, yPoints)
+        self.figure_canvas.draw_idle()
+
+# This histogram show the distribution of the temerature or humidity or brightness which base on the number of clients
+class Histogram:
+
+    def __init__(self, title, xlabel, ylabel, data, bins, master, row, col):
+        # create a figure
+        self.figure = Figure(figsize=figsize, dpi=dpi)
+
+        # create FigureCanvasTkAgg object
+        self.figure_canvas = FigureCanvasTkAgg(self.figure, master=master)
+
+        # create axes
+        self.axes = self.figure.add_subplot()
+
+        # Tilte, label for x and y axis
+        self.xLabel = xlabel
+        self.yLabel = ylabel
+        self.title = title
+
+        # create the barchart
+        self.bins = bins
+        self.axes.hist(data, bins)
+        self.axes.set_title(title)
+        self.axes.set_xlabel(xlabel)
+        self.axes.set_ylabel(ylabel)
+        self.figure_canvas.get_tk_widget().grid(row=row, column=col)
+
+    def update(self, data):
+        self.axes.cla()
+        self.axes.hist(data, self.bins)
+        self.axes.set_title(self.title)
+        self.axes.set_xlabel(self.xLabel)
+        self.axes.set_ylabel(self.yLabel)
+        self.figure_canvas.draw_idle()
