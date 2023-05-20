@@ -267,3 +267,104 @@ class Histogram:
         self.axes.set_xlabel(self.xLabel)
         self.axes.set_ylabel(self.yLabel)
         self.figure_canvas.draw_idle()
+
+# An array save the items to display
+hists = []
+
+# Represent all the stistics, using Tkinter library
+class GUI(tk.Tk):
+    # Set up the representation of the main frame
+    def __init__(self):
+        # Set up the main frame
+        super().__init__()
+        self.title(title)
+        frm_main = tk.Frame(master=self)
+        frm_main.grid(row=0, column=0, padx=padx, pady=pady)
+        frm_main.grid_columnconfigure((0, 1, 2), weight=1)
+        frm_main.grid_rowconfigure((0, 1, 2), weight=1)
+        frm_seach_box = tk.Frame(master=frm_main)
+        frm_seach_box.grid(row=0, column=0)
+        #self.searchBox = Seachbar(frm_seach_box)
+        self.table = Table(self)
+
+        # the 'self.data' attribute take responsibility for retreive, handle and update data.
+        self.data = Data()
+        self.data.getdata()
+
+        hists.append(
+            Histogram(
+                title="Biểu đồ histogram - Nhiệt độ",
+                xlabel="Nhiệt độ",
+                ylabel="Số lượng",
+                data=self.data.getTemp(),
+                bins=np.arange(-4, 40, 5),
+                master=frm_main,
+                row=0,
+                col=0,
+            )
+        )
+
+        hists.append(
+            Histogram(
+                title="Biểu đồ histogram - Ánh sáng",
+                xlabel="Ánh sáng",
+                ylabel="Số lượng",
+                data=self.data.getBright(),
+                bins=np.arange(0, 800, 100),
+                master=frm_main,
+                row=0,
+                col=1,
+            )
+        )
+
+        hists.append(
+            Histogram(
+                title="Biểu đồ histogram - Độ ẩm",
+                xlabel="Độ ẩm",
+                ylabel="Số lượng",
+                data=self.data.getHumid(),
+                bins=np.arange(0, 80, 10),
+                master=frm_main,
+                row=0,
+                col=2,
+            )
+        )
+
+        hists.append(
+            BarChart(
+                title="Số clients và Goodput trung bình",
+                xLabel="Số Client",
+                yLabel="ms",
+                xPoint=np.arange(0,50,5),
+                yPoint=self.data.getGoodput_average(),
+                master=frm_main,
+                row=1,
+                col=0,
+                # type='goodput',
+            )
+        )
+
+        hists.append(
+            BarChart(
+                xPoint=np.arange(0,50,5),
+                title="Số clients và Delay trung bình",
+                xLabel="Số Client",
+                yLabel="ms",
+                yPoint=self.data.getDelay_average(),
+                master=frm_main,
+                row=1,
+                col=1,
+                # type='delay',
+            )
+        )
+
+    # Update the GUI after an interval
+    def update(self):
+        self.data.getdata()
+        hists[0].update(self.data.getTemp())
+        hists[1].update(self.data.getBright())
+        hists[2].update(self.data.getHumid())
+        hists[3].update(self.data.getGoodput_average())
+        hists[4].update(self.data.getDelay_average())
+        self.table.update(self.data.rows)
+        self.after(2000, self.update)
