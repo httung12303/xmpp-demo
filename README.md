@@ -134,6 +134,12 @@ Our application can be split into 4 main components:
 - Database
 - User Interface
 
+> Please note that the Git repository of this project has 4 branches: **main, server, client, gui**. The last 3 should be self-explanatory while the **main** branch is simply for aggregating
+> all the code. To run the application, first run the SQL statements given in **create-db.md** to create the MySQL server. Then,replace the **ROOT** and **PASSWORD** in **DBManager.java** 
+> with your MySQL username and password. Finally, replace the IP address and port in the **XMPPServer.java** and **XMPPClient.java** and create the corresponding objects based on the examples given in their main methods. 
+> 
+> For the GUI, simply run the **GUI.py** file and you're good to go.
+
 Before going into Server and Client, let's look at some of the common sub-components that the 2 share:
 
 ## **Threads**
