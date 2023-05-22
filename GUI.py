@@ -138,7 +138,7 @@ class Data:
     goodbut_average = [0 for _ in range(40)]
     delay_average = [0 for _ in range(40)]
     connection = mysql.connector.connect(
-        host="localhost", user="root", password="12345678", database="xmpp_demo", autocommit=True
+        host="localhost", user="root", password="123456789", database="xmpp_demo", autocommit=True
         )
     cursor = connection.cursor()
 
@@ -309,9 +309,9 @@ class GUI(tk.Tk):
 
         hists.append(
             Histogram(
-                title="Biểu đồ histogram - Nhiệt độ",
-                xlabel="Nhiệt độ",
-                ylabel="Số lượng",
+                title="Temperature",
+                xlabel="Temperature",
+                ylabel="Number of clients",
                 data=self.data.getTemp(),
                 bins=np.arange(-4, 40, 5),
                 master=frm_main,
@@ -322,9 +322,9 @@ class GUI(tk.Tk):
 
         hists.append(
             Histogram(
-                title="Biểu đồ histogram - Ánh sáng",
-                xlabel="Ánh sáng",
-                ylabel="Số lượng",
+                title="Brightness",
+                xlabel="Brightness",
+                ylabel="Number of clients",
                 data=self.data.getBright(),
                 bins=np.arange(0, 5000, 500),
                 master=frm_main,
@@ -335,9 +335,9 @@ class GUI(tk.Tk):
 
         hists.append(
             Histogram(
-                title="Biểu đồ histogram - Độ ẩm",
-                xlabel="Độ ẩm",
-                ylabel="Số lượng",
+                title="Humidity",
+                xlabel="Humidity",
+                ylabel="Number of clients",
                 data=self.data.getHumid(),
                 bins=np.arange(0, 80, 10),
                 master=frm_main,
@@ -348,9 +348,9 @@ class GUI(tk.Tk):
 
         hists.append(
             BarChart(
-                title="Số clients và Goodput trung bình",
-                xLabel="Số Client",
-                yLabel="ms",
+                title="Average goodput",
+                xLabel="Number of clients",
+                yLabel="Average goodput",
                 xPoint=np.arange(0,200,5),
                 yPoint=self.data.getGoodput_average(),
                 master=frm_main,
@@ -363,9 +363,9 @@ class GUI(tk.Tk):
         hists.append(
             BarChart(
                 xPoint=np.arange(0,200,5),
-                title="Số clients và Delay trung bình",
-                xLabel="Số Client",
-                yLabel="ms",
+                title="Average delay",
+                xLabel="Number of clients",
+                yLabel="Average delay",
                 yPoint=self.data.getDelay_average(),
                 master=frm_main,
                 row=1,
@@ -410,37 +410,37 @@ class GUI2:
         self.performance_frame.grid(row=0, column=0)
 
         #Thông tin trong khung hiệu năng
-        self.clients_label = tk.Label(self.performance_frame, text="Number of Client")
+        self.clients_label = tk.Label(self.performance_frame, text="Number of clients")
         self.clients_label.grid(row=0, column=0, padx=10)
         self.num_of_clients = tk.Label(self.performance_frame, text= self.data.getNumClients())
         self.num_of_clients.grid(row=1, column=0, padx=10)
 
-        self.delay_avg = tk.Label(self.performance_frame, text="Delay Avg")
+        self.delay_avg = tk.Label(self.performance_frame, text="Avg delay")
         self.delay_avg.grid(row=0, column=1, padx=10)
         self.delay_avg_value = tk.Label(self.performance_frame, text = self.data.dl_avg())
         self.delay_avg_value.grid(row=1, column=1, padx=10)
 
-        self.delay_max = tk.Label(self.performance_frame, text="Delay Max")
+        self.delay_max = tk.Label(self.performance_frame, text="Max delay")
         self.delay_max.grid(row=0, column=2, padx=10)
         self.delay_max_value = tk.Label(self.performance_frame, text = self.data.getDelay_max())
         self.delay_max_value.grid(row=1, column=2, padx=10)
 
-        self.delay_min = tk.Label(self.performance_frame, text="Delay Min")
+        self.delay_min = tk.Label(self.performance_frame, text="Min delay")
         self.delay_min.grid(row=0, column=3, padx=10)
         self.delay_min_value = tk.Label(self.performance_frame, text = self.data.getDelay_min())
         self.delay_min_value.grid(row=1, column=3, padx=10)
         
-        self.goodput_avg = tk.Label(self.performance_frame, text="Goodput Avg")
+        self.goodput_avg = tk.Label(self.performance_frame, text="Avg goodput")
         self.goodput_avg.grid(row=0, column=4, padx=10)
         self.goodput_avg_value = tk.Label(self.performance_frame, text = self.data.gb_avg())
         self.goodput_avg_value.grid(row=1, column=4, padx=10)
 
-        self.goodput_max = tk.Label(self.performance_frame, text="Goodput Max")
+        self.goodput_max = tk.Label(self.performance_frame, text="Max goodput")
         self.goodput_max.grid(row=0, column=5, padx=10)
         self.goodput_max_value = tk.Label(self.performance_frame, text = self.data.getGoodput_max())
         self.goodput_max_value.grid(row=1, column=5, padx=10)
 
-        self.goodput_min = tk.Label(self.performance_frame, text="Goodput Min")
+        self.goodput_min = tk.Label(self.performance_frame, text="Min goodput")
         self.goodput_min.grid(row=0, column=6, padx=10)
         self.goodput_min_value = tk.Label(self.performance_frame, text = self.data.getGoodput_min())
         self.goodput_min_value.grid(row=1, column=6, padx=10)
@@ -500,11 +500,11 @@ class GUI2:
         if search_jid in jid:
             index = jid.index(search_jid)
             self.jid_value.config(text=jid[index])
-            self.temp_value.config(text=self.data.getTemp()[index])
-            self.humid_value.config(text=self.data.getHumid()[index])
-            self.bright_value.config(text=self.data.getBright()[index])
-            self.delay_value.config(text=self.data.getDelay()[index])
-            self.goodput_value.config(text=self.data.getGoodput()[index])
+            self.temp_value.config(text=(str(self.data.getTemp()[index]) + "°C"))
+            self.humid_value.config(text=(str(self.data.getHumid()[index]) +"%"))
+            self.bright_value.config(text=(str(self.data.getBright()[index]) + " lm"))
+            self.delay_value.config(text=(str(self.data.getDelay()[index]) + " ms"))
+            self.goodput_value.config(text=(str(self.data.getGoodput()[index]) + " Byte/s"))
         else:
             self.jid_value.config(text="None")
             self.temp_value.config(text="None")
