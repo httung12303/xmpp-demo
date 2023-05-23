@@ -307,7 +307,7 @@ Let's talk a little bit about the database which the DBManager object manages be
 
 Note that we use more threads to interact with the database to further increase server's performance. The implementations and how they work are not our focus so we will not cover them.
 
-### **5.5 Client**
+### **5.4 Client**
 
 The code is quite long, but here's all you need to know:
 
