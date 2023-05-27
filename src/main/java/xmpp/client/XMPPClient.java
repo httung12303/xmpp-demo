@@ -88,12 +88,15 @@ public class XMPPClient {
     }
 
     public static void main(String[] args) {
-        try {
-            XMPPClient client = new XMPPClient("192.168.1.107", 10000);
-            client.start();
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        for(int i = 0; i < 50; i++) {
+            try {
+                XMPPClient client = new XMPPClient("192.168.1.107", 10000);
+                client.start();
+                Thread.sleep(100);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
+
     }
 }

@@ -31,7 +31,7 @@ public class InsertRowThread extends Thread{
             int humidity = Integer.parseInt(iq.getInfo("humidity"));
             int brightness = Integer.parseInt(iq.getInfo("brightness"));
             long delay = timeReceived - iq.getTimeSent();
-            float goodput = (float) (Stanza.getDocumentBytes(iq).length * 1000) / delay;
+            float goodput = delay == 0 ? (float) 8000 : (float) (Stanza.getDocumentBytes(iq).length * 1000) / delay;
             synchronized (db) {
                 db.insertIntoClientsTable(jid, time, temperature, humidity, brightness, delay, goodput);
             }
