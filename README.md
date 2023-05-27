@@ -328,10 +328,11 @@ There are extensions of SendThread and ReceiveThread, but they are not that sign
 ## **6 Performance**
 In case you skipped it, the performance calculation of our application was mentioned [here](#the-database). But let's have a recap:
 - **Delay** - The difference between **receive time** on server side and **send time** included as an attribute in every stanza.
-- **Goodput** - We calculate the goodput of each transmission by dividing the **size of data** transmitted by the **delay** which we just mentioned.
+- **Goodput** - We calculate the goodput of each transmission by dividing the **size of data** transmitted by the **delay** which we just mentioned. In the case of **delay** being 0, **goodput** will be set to 8MBps (maximum goodput obtained through our test run)
+- **Maximum number of clients** - We couldn't find a way to calculate this number precisely, but after running as many clients as possible, the server started crashing at around 1300 clients if server and clients are on the same machine, and approximately 3300 clients if clients run on different machines. 
 
 As for the maximum number of clients, we couldn't find a sensible way to measure this figure so the only option is to run as many clients as possible until our application malfunctions.
-
+s
 ## **7 GUI**
 Unlike the rest of the project, the GUI is written in Python beacuse of the convenient and good support for visuualizeing data (with the help of Matplotlib and Tkinter library).  The GUI provides 3 main features in 3 different windows. All of these features take the data from the database periodically. The Data class in the source code takes responsibility for this task. Also, it provides some methods to extract some characteristic of the data such as minimum, maximum or average value of the temperature, humidity,...
 
