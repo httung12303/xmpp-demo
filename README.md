@@ -329,7 +329,7 @@ There are extensions of SendThread and ReceiveThread, but they are not that sign
 In case you skipped it, the performance calculation of our application was mentioned [here](#the-database). But let's have a recap:
 - **Delay** - The difference between **receive time** on server side and **send time** included as an attribute in every stanza.
 - **Goodput** - We calculate the goodput of each transmission by dividing the **size of data** transmitted by the **delay** which we just mentioned. In the case of **delay** being 0, **goodput** will be set to 8MBps (maximum goodput obtained through our test run)
-- **Maximum number of clients** - We couldn't find a way to calculate this number precisely, but after running as many clients as possible, the server started crashing at around 1300 clients if server and clients are on the same machine, and approximately 3300 clients if clients run on different machines. 
+- **Maximum number of clients** - We couldn't find a way to calculate this number precisely, but after running as many clients as possible, the server started crashing at around 1300 clients the application is run locally. 
 
 As for the maximum number of clients, we couldn't find a sensible way to measure this figure so the only option is to run as many clients as possible until our application malfunctions.
 s
